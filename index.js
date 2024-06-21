@@ -49,10 +49,16 @@ async function initialLoad() {
       option.textContent = breed.name;
       breedSelect.appendChild(option);
     });
+    if (breeds.length > 0) {
+      breedSelect.value = breeds[0].id;
+      handleBreedSelect();
+    }
   } catch (error) {
     console.error('Error fetching the breeds:', error);
   }
 }
+
+// initialLoad();
 
 fetch("https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=1", requestOptions)
 .then(response => response.text())
@@ -72,6 +78,49 @@ fetch("https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+async function handleBreedSelect() {
+  const breedId = breedSelect.value;
+
+  try {
+    const response = await fetch(`https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&limit=10`, requestOptions);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("Fetched images:", data);
+
+    Carousel.clear();
+
+    data.forEach(item => {
+      const carouselItem = Carousel.createCarouselItem(item.url, item.breeds[0].name, item.id);
+      Carousel.appendCarousel(carouselItem);
+    });
+
+    infoDump.innerHTML = "";
+    const breedInfo = data[0].breeds[0];
+    const infoElement = document.createElement('div');
+    infoElement.innerHTML = `
+      <h2>${breedInfo.name}</h2>
+      <p>${breedInfo.description}</p>
+      <p><strong>Temperament:</strong> ${breedInfo.temperament}</p>
+      <p><strong>Origin:</strong> ${breedInfo.origin}</p>
+      <p><strong>Life Span:</strong> ${breedInfo.life_span} years</p>
+    `;
+    infoDump.appendChild(infoElement);
+
+    Carousel.start();
+
+  } catch (error) {
+    console.error('Error fetching the breed information:', error);
+  }
+}
+
+initialLoad();
+
+breedSelect.addEventListener('change', handleBreedSelect);
+
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."

@@ -12638,7 +12638,7 @@ var requestOptions = {
 };
 function initialLoad() {
   return _initialLoad.apply(this, arguments);
-}
+} // initialLoad();
 function _initialLoad() {
   _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     var response, breeds;
@@ -12666,17 +12666,21 @@ function _initialLoad() {
             option.textContent = breed.name;
             breedSelect.appendChild(option);
           });
-          _context.next = 15;
+          if (breeds.length > 0) {
+            breedSelect.value = breeds[0].id;
+            handleBreedSelect();
+          }
+          _context.next = 16;
           break;
-        case 12:
-          _context.prev = 12;
+        case 13:
+          _context.prev = 13;
           _context.t0 = _context["catch"](0);
           console.error('Error fetching the breeds:', _context.t0);
-        case 15:
+        case 16:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 12]]);
+    }, _callee, null, [[0, 13]]);
   }));
   return _initialLoad.apply(this, arguments);
 }
@@ -12701,6 +12705,59 @@ fetch("https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+function handleBreedSelect() {
+  return _handleBreedSelect.apply(this, arguments);
+}
+function _handleBreedSelect() {
+  _handleBreedSelect = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var breedId, response, data, breedInfo, infoElement;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          breedId = breedSelect.value;
+          _context2.prev = 1;
+          _context2.next = 4;
+          return fetch("https://api.thecatapi.com/v1/images/search?breed_id=".concat(breedId, "&limit=10"), requestOptions);
+        case 4:
+          response = _context2.sent;
+          if (response.ok) {
+            _context2.next = 7;
+            break;
+          }
+          throw new Error("HTTP error! status: ".concat(response.status));
+        case 7:
+          _context2.next = 9;
+          return response.json();
+        case 9:
+          data = _context2.sent;
+          console.log("Fetched images:", data);
+          Carousel.clear();
+          data.forEach(function (item) {
+            var carouselItem = Carousel.createCarouselItem(item.url, item.breeds[0].name, item.id);
+            Carousel.appendCarousel(carouselItem);
+          });
+          infoDump.innerHTML = "";
+          breedInfo = data[0].breeds[0];
+          infoElement = document.createElement('div');
+          infoElement.innerHTML = "\n      <h2>".concat(breedInfo.name, "</h2>\n      <p>").concat(breedInfo.description, "</p>\n      <p><strong>Temperament:</strong> ").concat(breedInfo.temperament, "</p>\n      <p><strong>Origin:</strong> ").concat(breedInfo.origin, "</p>\n      <p><strong>Life Span:</strong> ").concat(breedInfo.life_span, " years</p>\n    ");
+          infoDump.appendChild(infoElement);
+          Carousel.start();
+          _context2.next = 24;
+          break;
+        case 21:
+          _context2.prev = 21;
+          _context2.t0 = _context2["catch"](1);
+          console.error('Error fetching the breed information:', _context2.t0);
+        case 24:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[1, 21]]);
+  }));
+  return _handleBreedSelect.apply(this, arguments);
+}
+initialLoad();
+breedSelect.addEventListener('change', handleBreedSelect);
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -12773,14 +12830,14 @@ function favourite(_x) {
  *   your code should account for this.
  */
 function _favourite() {
-  _favourite = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(imgId) {
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+  _favourite = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(imgId) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
         case 0:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return _favourite.apply(this, arguments);
 }
