@@ -49,6 +49,10 @@ async function initialLoad() {
       option.textContent = breed.name;
       breedSelect.appendChild(option);
     });
+  } catch (error) {
+    console.error('Error fetching the breeds:', error);
+  }
+}
 
 fetch("https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=1", requestOptions)
 .then(response => response.text())

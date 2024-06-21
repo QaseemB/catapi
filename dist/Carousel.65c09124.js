@@ -12641,13 +12641,42 @@ function initialLoad() {
 }
 function _initialLoad() {
   _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var response, breeds;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return fetch('https://api.thecatapi.com/v1/breeds', requestOptions);
+        case 3:
+          response = _context.sent;
+          if (response.ok) {
+            _context.next = 6;
+            break;
+          }
+          throw new Error("HTTP error! status: ".concat(response.status));
+        case 6:
+          _context.next = 8;
+          return response.json();
+        case 8:
+          breeds = _context.sent;
+          breeds.forEach(function (breed) {
+            var option = document.createElement('option');
+            option.value = breed.id;
+            option.textContent = breed.name;
+            breedSelect.appendChild(option);
+          });
+          _context.next = 15;
+          break;
+        case 12:
+          _context.prev = 12;
+          _context.t0 = _context["catch"](0);
+          console.error('Error fetching the breeds:', _context.t0);
+        case 15:
         case "end":
           return _context.stop();
       }
-    }, _callee);
+    }, _callee, null, [[0, 12]]);
   }));
   return _initialLoad.apply(this, arguments);
 }
